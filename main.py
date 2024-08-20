@@ -19,20 +19,34 @@ if __name__ == "__main__":
 parser = argparse.ArgumentParser()
 
 # arguements
-group = parser.add_argument_group("Query", "Query arguements for mpd.")
+
+# argument groups
+groupCurrent = parser.add_argument_group(
+    "Query Current Song", "Queries related to currently playing song.")
+
+groupStatus = parser.add_argument_group(
+    "Query Status", "Queries related to current status of mpd.")
+
+groupStats = parser.add_argument_group(
+    "Query Stats", "Queries related to statistics of mpd server.")
+
+
+# argument group Current
 
 # nowPlaying argument
-group.add_argument("-np", "--nowPlaying",
-                   help="Prints currently playing song name.",
-                   action="store_true")
+groupCurrent.add_argument("-np", "--nowPlaying",
+                          help="Prints currently playing song name.",
+                          action="store_true")
 
 # fileName argument
-group.add_argument("-fn", "--filename",
-                   help="Prints the file name of the song currently playing.",
-                   action="store_true")
+groupCurrent.add_argument("-fn", "--filename",
+                          help="Prints the file name of the song currently playing.",
+                          action="store_true")
 
 # argument logic
 args = parser.parse_args()
+
+# argument group current
 
 # nowPlaying arguement
 if args.nowPlaying:

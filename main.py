@@ -21,13 +21,14 @@ def help():
 py-mpd version: v0.1 (Alpha)
 
 Commands:
-  mpc                                               Display Status.
-  mpc pause                                         Pause currently playing song.
-  mpc resume                                        Resume currently playing song.
-  mpc pause/resume toggle                           Toggles pause/resume.
-  mpc stop                                          Stops playing.
-  mpc next                                          Plays next song in the playlist.
-  mpc previous                                      Plays previous song in the playlist.""")
+  py-mpd                                               Display Status.
+  py-mpd pause                                         Pause currently playing song.
+  py-mpd resume                                        Resume currently playing song.
+  py-mpd pause/resume toggle                           Toggles pause/resume.
+  py-mpd stop                                          Stops playing.
+  py-mpd next                                          Plays next song in the playlist.
+  py-mpd previous                                      Plays previous song in the playlist.
+  py-mpd play                                          Begins playing the playlist at song number SONGPOS.""")
 
 
 try:
@@ -48,6 +49,7 @@ except IndexError:
 
 
 match param1:
+
     case "pause":
         try:
             if param2 == "toggle":
@@ -56,6 +58,7 @@ match param1:
                 client.pause(1)
         except NameError:
             client.pause(1)
+
     case "resume":
         try:
             if param2 == "toggle":
@@ -64,16 +67,20 @@ match param1:
                 client.pause(0)
         except NameError:
             client.pause(0)
+
     case "stop":
         statusDict = client.status()
         if statusDict.get("state") == "stop":
             print("Player is already stopped.")
         else:
             client.stop()
+
     case "next":
         client.next()
+
     case "previous":
         client.previous()
+
     case "play":
         try:
             try:
@@ -105,6 +112,7 @@ match param1:
                 print("Invalid song index.")
             except ValueError:
                 print("Unexpected data type only integers are allowed.")
+
     case "help":
         help()
 

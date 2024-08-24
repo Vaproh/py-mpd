@@ -1,6 +1,6 @@
 import config
-import argparse
 from mpd import MPDClient
+import sys
 
 # mpd client settings
 client = MPDClient()                     # create object namely "client"
@@ -15,57 +15,67 @@ if __name__ == "__main__":
         config.port
     )
 
-# parser
-parser = argparse.ArgumentParser()
 
-# arguements
+def help():
+    print("""Usage: py-mpd [options] <command> [--] [<arguments>]
+py-mpd version: v0.1 (Alpha)
 
-# argument groups
-groupCurrent = parser.add_argument_group(
-    "Query Current Song", "Queries related to currently playing song.")
+Commands:
+  mpc                                               Display Status.
+  mpc pause                                         Pause currently playing song.
+  mpc resume                                        Resume currently playing song.
+  mpc pause/resume toggle                           Toggles pause/resume.
+  mpc stop                                          Stops playing.
+  mpc next                                          Plays next song in the playlist.
+  mpc previous                                      Plays previous song in the playlist.""")
 
-groupStatus = parser.add_argument_group(
-    "Query Status", "Queries related to current status of mpd.")
 
-groupStats = parser.add_argument_group(
-    "Query Stats", "Queries related to statistics of mpd server.")
+try:
+    param1 = sys.argv[1]
+except IndexError:
+    print(client.status())
+    sys.exit()
+
+try:
+    param2 = sys.argv[2]
+except IndexError:
+    pass
+
+try:
+    param3 = sys.argv[3]
+except IndexError:
+    pass
 
 
-# argument group Current
-
-# nowPlaying argument
-groupCurrent.add_argument("-np", "--nowPlaying",
-                          help="Prints currently playing song name.",
-                          action="store_true")
-
-# fileName argument
-groupCurrent.add_argument("-fn", "--filename",
-                          help="Prints the file name of the song currently playing.",
-                          action="store_true")
-
-# argument logic
-args = parser.parse_args()
-
-# argument group current
-
-# nowPlaying arguement
-if args.nowPlaying:
-    songDict_NP = client.currentsong()
-
-    if songDict_NP.get("title") is None and songDict_NP.get("artist") is None:
-        print("Nothings being playing currently.")
-    else:
-        print(f"{songDict_NP.get("title")} by {songDict_NP.get("artist")}")
-
-# fileName argument
-if args.filename:
-    songDict_FN = client.currentsong()
-
-    if songDict_FN.get("file") is None:
-        print("Nothings being playing currently.")
-    else:
-        print(f"Filename is \'{songDict_FN.get("file")}\'")
-
+match param1:
+    case "pause":
+        try:
+            if param2 == "toggle":
+                client.pause()
+            else:
+                client.pause(1)
+        except NameError:
+            client.pause(1)
+    case "resume":
+        try:
+            if param2 == "toggle":
+                client.pause()
+            else:
+                client.pause(0)
+        except NameError:
+            client.pause(0)
+    case "stop":
+        statusDict = client.status()
+        if statusDict.get("state") == "stop":
+            print("Player is already stopped.")
+        else:
+            client.stop()
+    case "next":
+        client.next()
+    case "previous":
+        client.previous()
+    case "help":
+        help()
 
 # close and disconnect from the server
 client.close()

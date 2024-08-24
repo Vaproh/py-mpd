@@ -1,9 +1,9 @@
 import config
-from mpd import MPDClient
+import mpd
 import sys
 
 # mpd client settings
-client = MPDClient()                     # create object namely "client"
+client = mpd.MPDClient()                     # create object namely "client"
 client.timeout = config.timeout          # network timeout
 # timeout for fetching the result of the idle command
 client.idletimeout = config.idleTimeout
@@ -74,6 +74,20 @@ match param1:
         client.next()
     case "previous":
         client.previous()
+    case "play":
+        try:
+            try:
+                client.play(param2)
+            except mpd.base.CommandError:
+                print("Invalid song index or invalid data type, only integers are allowed!")
+        except NameError:
+            try:
+                songID = int(input("Enter song id in playlist: "))
+                client.play(songID)
+            except mpd.base.CommandError:
+                print("Invalid song index.")
+            except ValueError:
+                print("Unexpected data type only integers are allowed.")
     case "help":
         help()
 

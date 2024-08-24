@@ -79,11 +79,28 @@ match param1:
             try:
                 client.play(param2)
             except mpd.base.CommandError:
-                print("Invalid song index or invalid data type, only integers are allowed!")
+                print(
+                    "Invalid song index or invalid data type, only integers are allowed!")
+        except NameError:
+            try:
+                songPOS = int(input("Enter song number in playlist: "))
+                client.play(songPOS)
+            except mpd.base.CommandError:
+                print("Invalid song index.")
+            except ValueError:
+                print("Unexpected data type only integers are allowed.")
+
+    case "playid":
+        try:
+            try:
+                client.playid(param2)
+            except mpd.base.CommandError:
+                print(
+                    "Invalid song index or invalid data type, only integers are allowed!")
         except NameError:
             try:
                 songID = int(input("Enter song id in playlist: "))
-                client.play(songID)
+                client.playid(songID)
             except mpd.base.CommandError:
                 print("Invalid song index.")
             except ValueError:
